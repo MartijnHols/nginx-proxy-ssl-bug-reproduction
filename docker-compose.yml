@@ -1,0 +1,31 @@
+version: '3'
+services:
+  s1:
+    image: nginxdemos/hello
+    environment:
+    - VIRTUAL_HOST=s1.localhost
+    networks:
+    - reverse-proxy
+
+  s2:
+    image: nginxdemos/hello
+    environment:
+    - VIRTUAL_HOST=s2.localhost
+    networks:
+    - reverse-proxy
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    restart: unless-stopped
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    - ./config/certificates/:/etc/nginx/certs:ro
+    networks:
+    - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
