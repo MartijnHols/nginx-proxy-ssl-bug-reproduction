@@ -23,6 +23,7 @@ services:
     volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
     - ./config/certificates/:/etc/nginx/certs:ro
+    - ./config/nginx-proxy/nginx.tmpl:/app/nginx.tmpl
     networks:
     - reverse-proxy
 
