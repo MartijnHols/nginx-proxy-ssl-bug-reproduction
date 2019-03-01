@@ -202,6 +202,10 @@ server {
 }
 {{ end }}
 
+{{/* Prepare hostnames to be converted in regex */}}
+{{ $http_host := replace $host "." "\\." -1 }}
+{{ $http_host := replace $http_host "," "|" -1 }}
+
 server {
 	server_name {{ $host }};
 	listen 443 ssl http2 {{ $default_server }};
@@ -209,6 +213,11 @@ server {
 	listen [::]:443 ssl http2 {{ $default_server }};
 	{{ end }}
 	access_log /var/log/nginx/access.log vhost;
+
+	{{/* Source: https://github.com/jwilder/nginx-proxy/pull/614/files */}}
+ 	if ( $http_host !~* ^({{ $http_host }}) ) {
+		return 503;
+	}
 
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
