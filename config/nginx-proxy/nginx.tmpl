@@ -205,6 +205,7 @@ server {
 {{/* Prepare hostnames to be converted in regex */}}
 {{ $http_host := replace $host "." "\\." -1 }}
 {{ $http_host := replace $http_host "," "|" -1 }}
+{{ $http_host := replace $http_host "*" ".+" -1 }}
 
 server {
 	server_name {{ $host }};
